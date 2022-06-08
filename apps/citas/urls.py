@@ -23,7 +23,7 @@ urlpatterns =[
     path('eliminar_tipo_servicio/',login_required(eliminarTipoServicio), name='eliminar_tipo_servicio'),
 
     path('listar_servicio/',login_required(ServicioListView.as_view()), name='listar_servicio'),
-    path('servicio/',login_required(ServicioView.as_view()), name='tipo_servicio'),
+    path('servicio/',login_required(ServicioView.as_view()), name='servicio'),
     path('modificar_servicio/',login_required(ServicioUpdateView.as_view()), name='modificar_servicio'),
     path('eliminar_servicio/',login_required(eliminarServicio), name='eliminar_servicio'),
 
