@@ -13,7 +13,8 @@
   <!-- Font Awesome -->
   <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
   <!-- Ionicons -->
-  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
+
   <!-- Tempusdominus Bootstrap 4 
   <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
   <!-- iCheck 
@@ -22,6 +23,8 @@
   <link rel="stylesheet" href="plugins/jqvmap/jqvmap.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %} ">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.11.4/datatables.min.css"/>
+
   <!-- overlayScrollbars 
   <link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
   <!-- Daterange picker 
@@ -116,32 +119,44 @@
               </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item">
+                  <a href="{% url 'citas:tipo_mascota' %}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Tipo de Mascota</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'citas:raza' %}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Raza</p>
+                  </a>
+                </li>
+                <li class="nav-item">
                   <a href="{% url 'citas:servicio' %}" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
                     <p>Servicio</p>
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="#" class="nav-link">
+                  <a href="{% url 'citas:tipo_servicio' %}" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
-                    <p>Segunda</p>
+                    <p>Tipo de Servicio</p>
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="#" class="nav-link">
+                  <a href="{% url 'citas:mascota' %}" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
-                    <p>Tercera</p>
+                    <p>Mascota</p>
                   </a>
                 </li>
               </ul>
             </li>
             
-            <li class="nav-header">EJEMPLOS</li>
+            <li class="nav-header">Transacciones</li>
             <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="nav-icon far fa-calendar-alt"></i>
                 <p>
-                  Primera opcion
+                  Citas
                 </p>
               </a>
             </li>
@@ -158,6 +173,9 @@
         </nav>
         <!-- /.sidebar-menu -->
       </div>
+      <div hidden>
+        <p id="id_user">{{ user.id }}</p>
+      </div>
       <!-- /.sidebar -->
     </aside>
 
@@ -173,6 +191,7 @@
         
         
       {% endblock body %}
+      
         
       
       <!-- /.content -->
@@ -208,6 +227,7 @@
   <!--<script src="plugins/chart.js/Chart.min.js"></script>  -->
   <!-- Sparkline -->
   <script src="{% static 'plugins/sparklines/sparkline.js' %}"></script>
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <!-- JQVMap -->
   <!--<script src="plugins/jqvmap/jquery.vmap.min.js"></script> -->
   <!--<script src="plugins/jqvmap/maps/jquery.vmap.usa.js"></script> -->
@@ -225,5 +245,46 @@
   <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script> -->
  <!--AdminLTE App -->
   <script src="{% static 'dist/js/adminlte.js' %}"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.11.4/datatables.min.js"></script>
+  <script>
+        function soloLetras(e) {
+            const key = e.keyCode || e.which;
+            let tecla = String.fromCharCode(key).toString();
+            const letras="áéíóúabcdefghijklmnñopqrstuvwxyzÁÉÍÓÚABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
+            const especiales = [8,13,32];
+    
+            let tecla_especial=false;
+            for (let i in especiales){
+                if (key==especiales[i]){
+                    tecla_especial=true;
+                    break;
+                }
+            }
+            if(letras.indexOf(tecla)==-1 && !tecla_especial){
+                console.log(letras.toUpperCase())
+                return false;
+            }
+        }
+    </script>
+
+    <script>
+        function soloNumeros(evt){
+            let keynum;
+            if(window.event){
+                keynum=evt.keyCode;
+            }else{
+                keynum = evt-which;
+            }
+            if((keynum>47 && keynum < 58 ) || keynum == 8 || keynum ==13|| keynum == 46 ){
+                return true;
+            }else{
+                return false
+            }
+        }
+    </script> 
+  {% block js %}
+    
+  {% endblock js %}
+    
 </body> 
 </html>

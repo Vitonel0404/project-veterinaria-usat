@@ -41,11 +41,11 @@ class MascotaForm(forms.ModelForm):
         model = Mascota
         fields = '__all__'
         widgets={
-            'id_cliente':forms.TextInput(attrs={'class':'form-control','onkeypress':'return soloNumeros(event);'}),
+            #'id_cliente':forms.TextInput(attrs={'class':'form-control','onkeypress':'return soloNumeros(event);'}),
             'id_raza':forms.Select(attrs={'class':'form-select'}),
             'nombre':forms.TextInput(attrs={'class':'form-control','onkeypress':'return soloLetras(event);'}),
-            'fecha_nacimiento':forms.DateInput(attrs={'class':'form-control'}),
-            'fecha_registro':forms.DateInput(attrs={'class':'form-control'}),
+            'fecha_nacimiento':forms.TextInput(attrs={'class':'form-control','type':'date'}),
+            'fecha_registro':forms.TextInput(attrs={'class':'form-control','type':'date'}),
             'estado':forms.CheckboxInput(),
         }
 
@@ -87,7 +87,7 @@ class ServicioForm(forms.ModelForm):
             'id_tipo_servicio':forms.Select(attrs={'class':'form-select'}),
             'descripcion':forms.TextInput(attrs={'class':'form-control','onkeypress':'return soloLetras(event);'}),
             'precio':forms.NumberInput(attrs={'class':'form-control','onkeypress':'return soloNumeros(event);'}),
-            'estado':forms.CheckboxInput(attrs={'class':'form-control'}),
+            'estado':forms.CheckboxInput(),
 
         }
 

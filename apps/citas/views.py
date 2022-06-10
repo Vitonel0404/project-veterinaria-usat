@@ -6,8 +6,18 @@ from django.views import View
 from django.views.generic import ListView, UpdateView, TemplateView
 from django.core.serializers import serialize
 from apps.citas.models import *
+from apps.gestion.models import *
 from apps.citas.form import *
 # Create your views here.
+
+def buscarCliente(request,dni):
+    if request.method=='GET':
+        print(dni)
+        tm=Cliente.objects.filter(numero_documento=dni)
+        print(tm)
+        tm_serializer=serialize('json',tm)
+        return JsonResponse({'status':True,'cliente':tm_serializer})
+
 class TipoMascotaListView(ListView):
     def get(self,request,*args,**kwargs):
         tm=TipoMascota.objects.all()
@@ -17,7 +27,7 @@ class TipoMascotaListView(ListView):
 class TipoMascotaView(View):
     model= TipoMascota
     form_class= TipoMascotaForm
-    template_name='Citas/tipo_mascota.html'
+    template_name='Citas/tipomascota.html'
     
     def get_context_data(self, **kwargs):
         context = {}
@@ -52,6 +62,7 @@ class TipoMascotaUpdateView(UpdateView):
 def eliminarTipoMascota(request, id):
     if request.method=='GET':
         tm=TipoMascota.objects.filter(id_tipo_mascota=id)
+        print(tm)
         if tm.exists():
             tm.delete()
             return JsonResponse({'status':True,'mensaje':'Tipo de mascota elimado correctamente'})  
@@ -59,7 +70,8 @@ def eliminarTipoMascota(request, id):
 class RazaListView(ListView):
     def get(self,request,*args,**kwargs):
         cursor =connection.cursor()
-        sql=""
+        sql="select raza.id_raza as id,raza.descripcion,raza.estado,tipo_mascota.descripcion from citas_raza as raza "
+        sql+="inner join citas_tipomascota as tipo_mascota on raza.id_tipo_mascota_id=tipo_mascota.id_tipo_mascota "
         cursor.execute(sql)
         razas = cursor.fetchall()
         cursor.close()
@@ -110,7 +122,7 @@ def eliminarRaza(request, id):
 class MascotaListView(ListView):
     def get(self,request,*args,**kwargs):
         cursor =connection.cursor()
-        sql=""
+        sql="select * from fn_lista_mascotas()"
         cursor.execute(sql)
         mascota = cursor.fetchall()
         cursor.close()
@@ -124,6 +136,7 @@ class MascotaView(View):
     def get_context_data(self, **kwargs):
         context = {}
         context['form']=self.form_class
+        context['animal']=TipoMascota.objects.all()
         return context
     
     def get(self, request,*args,**kwargs):
@@ -135,35 +148,40 @@ class MascotaView(View):
             formulario.save()
             return JsonResponse({'status':True,'mensaje':'Mascota agregado correctamente'})
         else:
+            print(formulario.errors)
             return JsonResponse({'status':False,'mensaje':'Formulario inválido','errors':formulario.errors})
         
 class MascotaUpdateView(UpdateView):
     def post(self,request,*args,**kwargs):
+        print(request.POST['id_mascota'])
         raza=get_object_or_404(Mascota,id_mascota=request.POST['id_mascota'])
+        print('9')
+        print(raza)
         formulario=MascotaForm(request.POST, instance=raza)
         if formulario.is_valid():
             formulario.save()
             return JsonResponse({'status':True,'mensaje':'Mascota modificado correctamente'})
         else:
+            print(formulario.errors)
             return JsonResponse({'status':False,'mensaje':'Formulario inválido','errors':formulario.errors})
 
 def eliminarMascota(request, id):
     if request.method=='GET':
-        mascota=Raza.objects.filter(id_mascota=id)
+        mascota=Mascota.objects.filter(id_mascota=id)
         if mascota.exists():
             mascota.delete()
             return JsonResponse({'status':True,'mensaje':'Mascota elimado correctamente'})  
 
 class TipoServicioListView(ListView):
     def get(self,request,*args,**kwargs):
-        ts=TipoMascota.objects.all()
+        ts=TipoServicio.objects.all()
         ts_serialize=serialize('json',ts)
         return JsonResponse({'status':True,'tipo_servicio':ts_serialize})
 
 class TipoServicioView(View):
     model= TipoServicio
     form_class= TipoServicioForm
-    template_name='Citas/tipo_servicio.html'
+    template_name='Citas/tiposervicio.html'
     
     def get_context_data(self, **kwargs):
         context = {}
@@ -205,7 +223,7 @@ def eliminarTipoServicio(request, id):
 class ServicioListView(ListView):
     def get(self,request,*args,**kwargs):
         cursor =connection.cursor()
-        sql=""
+        sql="select * from fn_lista_servicios()"
         cursor.execute(sql)
         servicio = cursor.fetchall()
         cursor.close()
